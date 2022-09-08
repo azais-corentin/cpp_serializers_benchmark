@@ -1,0 +1,58 @@
+# Find bitsery
+find_package(Bitsery CONFIG REQUIRED)
+
+#bitsery_brief_syntax
+add_library(bitsery_brief_syntax)
+target_sources(bitsery_brief_syntax PRIVATE bitsery_brief_syntax.hh bitsery_brief_syntax.cc)
+target_set_options(bitsery_brief_syntax)
+target_link_libraries(bitsery_brief_syntax PRIVATE common)
+target_include_directories(bitsery_brief_syntax PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(bitsery_brief_syntax PRIVATE Bitsery::bitsery)
+
+#bitsery_compatibility
+add_library(bitsery_compatibility)
+target_sources(bitsery_compatibility PRIVATE bitsery_compatibility.hh bitsery_compatibility.cc)
+target_set_options(bitsery_compatibility)
+target_link_libraries(bitsery_compatibility PRIVATE common)
+target_include_directories(bitsery_compatibility PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(bitsery_compatibility PRIVATE Bitsery::bitsery)
+
+#bitsery_compression
+add_library(bitsery_compression)
+target_sources(bitsery_compression PRIVATE bitsery_compression.hh bitsery_compression.cc)
+target_set_options(bitsery_compression)
+target_link_libraries(bitsery_compression PRIVATE common)
+target_include_directories(bitsery_compression PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(bitsery_compression PRIVATE Bitsery::bitsery)
+
+#bitsery_fixed_buffer
+add_library(bitsery_fixed_buffer)
+target_sources(bitsery_fixed_buffer PRIVATE bitsery_fixed_buffer.hh bitsery_fixed_buffer.cc)
+target_set_options(bitsery_fixed_buffer)
+target_link_libraries(bitsery_fixed_buffer PRIVATE common)
+target_include_directories(bitsery_fixed_buffer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(bitsery_fixed_buffer PRIVATE Bitsery::bitsery)
+
+#bitsery_general
+add_library(bitsery_general)
+target_sources(bitsery_general PRIVATE bitsery_general.hh bitsery_general.cc)
+target_set_options(bitsery_general)
+target_link_libraries(bitsery_general PRIVATE common)
+target_include_directories(bitsery_general PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(bitsery_general PRIVATE Bitsery::bitsery)
+
+#bitsery_sstream
+add_library(bitsery_sstream)
+target_sources(bitsery_sstream PRIVATE bitsery_sstream.hh bitsery_sstream.cc)
+target_set_options(bitsery_sstream)
+target_link_libraries(bitsery_sstream PRIVATE common)
+target_include_directories(bitsery_sstream PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(bitsery_sstream PRIVATE Bitsery::bitsery)
+
+#bitsery_unsafe_read
+add_library(bitsery_unsafe_read)
+target_sources(bitsery_unsafe_read PRIVATE bitsery_unsafe_read.hh bitsery_unsafe_read.cc)
+target_set_options(bitsery_unsafe_read)
+target_link_libraries(bitsery_unsafe_read PRIVATE common)
+target_include_directories(bitsery_unsafe_read PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(bitsery_unsafe_read PRIVATE Bitsery::bitsery)

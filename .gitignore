@@ -1,10 +1,5 @@
 build/
-cmake-build-debug/
-.idea/
-.vs/
-tools/Testing/
-tools/results/
-tools/node_modules/
-flatbuffers/monster_generated.h
-protobuf/monster.pb.h
-protobuf/monster.pb.cc
+*_generated.h
+*.pb.h
+*.pb.cc
+*.user

@@ -1,44 +1,38 @@
-cmake_minimum_required(VERSION 3.5)
-project(cpp_serializers_benchmark)
-
-#################################################
-# configure required depencendies
-#################################################
+cmake_minimum_required(VERSION 3.20)
 
 include(ExternalProject)
 
-#################################################
-# configure compiler and set default compile options
-#################################################
+# Vcpkg as a submodule
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake
+    CACHE STRING "Vcpkg toolchain file")
 
-#default definitions
-add_definitions(-DNDEBUG)
-add_definitions(-DMONSTERS=50)
-add_definitions(-DSAMPLES=300000)
+# Project
+project(cpp_serializers_benchmark)
 
-# compiler
-set(CMAKE_CXX_STANDARD 20)
-# we only care about -O2
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+include(CheckIPOSupported)
+check_ipo_supported(RESULT ipo_supported LANGUAGES C CXX)
 
-#################################################
-# add testing target and enable testing
-# for convienience, e.g. ctest --verbose | grep "*"
-#################################################
-enable_testing()
-add_subdirectory(testing_core)
+# Sets the compilation options for the target
+function(target_set_options target)
+  # C++20
+  target_compile_features(${target} PUBLIC cxx_std_20)
+  set_target_properties(${target} PROPERTIES CXX_EXTENSIONS OFF)
+  # Enable Link Time Optimization if available
+  if(ipo_supported)
+    set_target_properties(${target} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+  endif()
+  # Warnings
+  target_compile_options(${target} PRIVATE
+      $<$<CXX_COMPILER_ID:MSVC>:/W4> # MSVC
+      $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic> # Not MSVC
+  )
+endfunction()
 
-#################################################
-# configure executables
-#################################################
+# Common
+add_subdirectory(common)
 
-add_subdirectory(bitsery)
-add_subdirectory(boost)
-add_subdirectory(cereal)
-add_subdirectory(flatbuffers)
-add_subdirectory(hand_written)
-add_subdirectory(iostream)
-add_subdirectory(msgpack)
-add_subdirectory(protobuf)
-add_subdirectory(yas)
-add_subdirectory(zpp_bits)
+# Benchmarks
+add_subdirectory(benchmarks)
+
+# Executable
+add_subdirectory(src)

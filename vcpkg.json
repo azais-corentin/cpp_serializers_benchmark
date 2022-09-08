@@ -1,0 +1,16 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+    "name": "cpp-serializers-benchmark",
+    "version": "0.1.0",
+    "dependencies": [
+        "nanobench",
+        "bitsery",
+        "boost-serialization",
+        "cereal",
+        "flatbuffers",
+        "msgpack",
+        "protobuf",
+        "yas",
+        "zpp-bits"
+    ]
+}

@@ -23,8 +23,17 @@ function(target_set_options target)
   endif()
   # Warnings
   target_compile_options(${target} PRIVATE
-      $<$<CXX_COMPILER_ID:MSVC>:/W4> # MSVC
-      $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic> # Not MSVC
+    $<$<CXX_COMPILER_ID:MSVC>:/W4> # MSVC
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic> # Not MSVC
+  )
+  # Optimization
+  target_compile_options(${target} PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:/GL> # MSVC
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-O3> # Not MSVC
+  )
+  target_link_options(${target} PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:/LTCG /USEPROFILE> # MSVC
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:> # Not MSVC
   )
 endfunction()
 

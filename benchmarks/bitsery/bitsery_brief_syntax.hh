@@ -9,5 +9,5 @@
 struct bitsery_brief_syntax {
     std::vector<std::byte> serialize(std::span<const BenchmarkTypes::Monster> input);
 
-    std::vector<BenchmarkTypes::Monster> deserialize(std::span<const std::byte> input);
+    std::vector<BenchmarkTypes::Monster> deserialize(std::vector<std::byte> const &input);
 };

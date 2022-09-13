@@ -31,18 +31,56 @@ using Buffer        = std::vector<std::byte>;
 using InputAdapter  = bitsery::InputBufferAdapter<Buffer>;
 using OutputAdapter = bitsery::OutputBufferAdapter<Buffer>;
 
-std::vector<std::byte> bitsery_general::serialize(std::vector<BenchmarkTypes::Monster> input) {
+/**
+ * Bitsery traits for std::span container
+ */
+namespace bitsery::traits {
+
+template <typename T> struct ContainerTraits<std::span<T>> : public StdContainer<std::span<T>, true, true> {};
+
+template <typename T> struct BufferAdapterTraits<std::span<T>> : public StdContainerForBufferAdapter<std::span<T>> {};
+
+} // namespace bitsery::traits
+
+namespace bitsery {
+
+template <typename S> void serialize(S &s, BenchmarkTypes::Vec3 &o) {
+    s.value4b(o.x);
+    s.value4b(o.y);
+    s.value4b(o.z);
+}
+
+template <typename S> void serialize(S &s, BenchmarkTypes::Weapon &o) {
+    s.text1b(o.name, 10);
+    s.value2b(o.damage);
+}
+
+template <typename S> void serialize(S &s, BenchmarkTypes::Monster &o) {
+    s.value1b(o.color);
+    s.value2b(o.mana);
+    s.value2b(o.hp);
+    s.object(o.equipped);
+    s.object(o.pos);
+    s.container(o.path, 10);
+    s.container(o.weapons, 10);
+    s.container1b(o.inventory, 10);
+    s.text1b(o.name, 10);
+}
+
+} // namespace bitsery
+
+std::vector<std::byte> bitsery_general::serialize(std::span<const BenchmarkTypes::Monster> input) {
     Buffer output;
 
     bitsery::Serializer<OutputAdapter> serializer(output);
 
-    serializer.container(input, 10000000);
+    serializer.container(input, 100000000);
     serializer.adapter().flush();
 
     return output;
 }
 
-std::vector<BenchmarkTypes::Monster> bitsery_general::deserialize(const std::vector<std::byte> &input) {
+std::vector<BenchmarkTypes::Monster> bitsery_general::deserialize(std::vector<std::byte> const &input) {
     std::vector<BenchmarkTypes::Monster> output;
 
     bitsery::Deserializer<InputAdapter> deserializer(input.begin(), input.size());
@@ -50,39 +88,3 @@ std::vector<BenchmarkTypes::Monster> bitsery_general::deserialize(const std::vec
 
     return output;
 }
-
-/*
-
-class BitseryArchiver : public ISerializerTest {
-  public:
-
-    Buf serialize(const std::vector<MyTypes::Monster> &data) override {
-        _buf.clear();
-        bitsery::Serializer<OutputAdapter> ser(_buf);
-        ser.container(data, 100000000);
-        ser.adapter().flush();
-        return Buf{std::addressof(*std::begin(_buf)), ser.adapter().writtenBytesCount()};
-    }
-
-    void deserialize(Buf buf, std::vector<MyTypes::Monster> &res) override {
-        bitsery::Deserializer<InputAdapter> des(_buf.begin(), buf.bytesCount);
-        des.container(res, 100000000);
-    }
-
-    TestInfo testInfo() const override {
-        return {
-            SerializationLibrary::BITSERY,
-            "general",
-            ""
-        };
-    }
-
-  private:
-    Buffer _buf{};
-};
-
-int main() {
-    BitseryArchiver test{};
-    return runTest(test);
-}
-*/

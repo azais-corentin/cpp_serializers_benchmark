@@ -20,24 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "zpp_bits.hh" // Ours
+#include "memcpy.hh"
 
-#include "zpp_bits.h" // External library
+std::vector<std::byte> memcpy_benchmark::serialize(std::span<const BenchmarkTypes::Monster> input) {
+    std::vector<std::byte> output(input.size_bytes());
+    memcpy(output.data(), input.data(), input.size_bytes());
 
-std::vector<std::byte> zpp_bits::serialize(std::span<const BenchmarkTypes::Monster> input) {
-    auto [data, out] = zpp::bits::data_out();
-
-    if (zpp::bits::success(out(input))) { return data; }
-
-    return {};
+    return output;
 }
 
-std::vector<BenchmarkTypes::Monster> zpp_bits::deserialize(std::span<const std::byte> input) {
-    zpp::bits::in in{input};
+std::vector<BenchmarkTypes::Monster> memcpy_benchmark::deserialize(std::span<const std::byte> input) {
+    const std::size_t size = input.size_bytes() / sizeof(BenchmarkTypes::Monster);
 
-    std::vector<BenchmarkTypes::Monster> output;
+    std::vector<BenchmarkTypes::Monster> output(size);
+    output.resize(size);
+    memcpy(output.data(), input.data(), input.size_bytes());
 
-    if (zpp::bits::success(in(output))) { return output; }
-
-    return {};
+    return output;
 }

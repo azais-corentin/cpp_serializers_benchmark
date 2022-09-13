@@ -1,33 +1,43 @@
-set(flatbuffers_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/flatbuffers)
-set(flatbuffers_INCLUDE ${flatbuffers_PREFIX}/include)
-ExternalProject_Add(
-        flatbuffers_dep
-        PREFIX ${flatbuffers_PREFIX}
-        URL "https://github.com/google/flatbuffers/archive/refs/tags/v2.0.0.tar.gz"
-        URL_MD5 "a27992324c3cbf86dd888268a23d17bd"
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${flatbuffers_PREFIX} -DCMAKE_BUILD_TYPE=Release
-        LOG_UPDATE ON
-        LOG_CONFIGURE ON
-        LOG_BUILD ON
-        CMAKE_ARGS -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD} -DCMAKE_C_COMPILER='${CMAKE_C_COMPILER}' -DCMAKE_CXX_COMPILER='${CMAKE_CXX_COMPILER}' -DCMAKE_SYSTEM_PROCESSOR=${DCMAKE_SYSTEM_PROCESSOR}
-          -DCMAKE_ASM_FLAGS='${CMAKE_ASM_FLAGS}' -DCMAKE_LINK_FLAGS='${CMAKE_LINK_FLAGS}'
+find_package(Flatbuffers CONFIG REQUIRED)
+
+set(FLATBUFFERS_FLATC_EXECUTABLE "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/tools/flatbuffers/flatc")
+
+# flatbuffers
+add_library(flatbuffers)
+target_sources(flatbuffers PRIVATE flatbuffers.hh flatbuffers.cc)
+target_set_options(flatbuffers)
+target_link_libraries(flatbuffers PRIVATE common flatbuffers::flatbuffers)
+target_include_directories(flatbuffers PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+# Build flatbuffer schemas
+include(BuildFlatBuffers.cmake)
+build_flatbuffers(
+    ${CMAKE_CURRENT_SOURCE_DIR}/monster.fbs
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    flatbuffers_generation
+    ""
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ""
+    ""
 )
+add_dependencies(flatbuffers flatbuffers_generation)
+#add_fbs_header(monster)
+#target_include_directories(flatbuffers PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+#target_sources(flatbuffers PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/monster_generated.h)
 
-set(flatbuffers_GENERATOR ${flatbuffers_PREFIX}/bin/flatc)
-set(flatbuffers_SOURCE_DIR ${CMAKE_SOURCE_DIR}/flatbuffers)
-set(flatbuffers_SCHEMA_FILE ${flatbuffers_SOURCE_DIR}/monster.fbs)
-set(flatbuffers_GENERATED_FILE ${flatbuffers_SOURCE_DIR}/monster_generated.h)
-add_custom_command(
-        DEPENDS ${flatbuffers_SCHEMA_FILE}
-        COMMAND ${flatbuffers_GENERATOR}
-        ARGS --cpp -o ${flatbuffers_SOURCE_DIR}/ ${flatbuffers_SCHEMA_FILE}
-        OUTPUT ${flatbuffers_GENERATED_FILE}
-        COMMENT "Executing FlatBuffers compiler")
-set_source_files_properties(${flatbuffers_GENERATED_FILE} PROPERTIES GENERATED TRUE)
+#set(flatbuffers_SOURCE_DIR ${CMAKE_SOURCE_DIR}/flatbuffers)
+#set(flatbuffers_SCHEMA_FILE ${flatbuffers_SOURCE_DIR}/monster.fbs)
+#set(flatbuffers_GENERATED_FILE ${flatbuffers_SOURCE_DIR}/monster_generated.h)
+#add_custom_command(
+#        DEPENDS ${flatbuffers_SCHEMA_FILE}
+#        COMMAND ${flatbuffers_GENERATOR}
+#        ARGS --cpp -o ${flatbuffers_SOURCE_DIR}/ ${flatbuffers_SCHEMA_FILE}
+#        OUTPUT ${flatbuffers_GENERATED_FILE}
+#        COMMENT "Executing FlatBuffers compiler")
+#set_source_files_properties(${flatbuffers_GENERATED_FILE} PROPERTIES GENERATED TRUE)
 
 
-add_executable(flatbuffers flatbuffers.cpp ${SOURCE_FILES} ${flatbuffers_GENERATED_FILE})
-add_dependencies(flatbuffers flatbuffers_dep)
-target_include_directories(flatbuffers PUBLIC ${flatbuffers_INCLUDE})
-target_link_libraries(flatbuffers PRIVATE Testing::core)
-add_test(NAME test_flatbuffers COMMAND flatbuffers)
+#add_executable(flatbuffers flatbuffers.cpp ${SOURCE_FILES} ${flatbuffers_GENERATED_FILE})
+#add_dependencies(flatbuffers flatbuffers_dep)
+#target_include_directories(flatbuffers PUBLIC ${flatbuffers_INCLUDE})
+#target_link_libraries(flatbuffers PRIVATE Testing::core)
+#add_test(NAME test_flatbuffers COMMAND flatbuffers)

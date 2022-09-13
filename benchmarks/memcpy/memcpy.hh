@@ -6,8 +6,8 @@
 #include <span>
 #include <vector>
 
-struct bitsery_general {
+struct memcpy_benchmark {
     std::vector<std::byte> serialize(std::span<const BenchmarkTypes::Monster> input);
 
-    std::vector<BenchmarkTypes::Monster> deserialize(const std::vector<std::byte> &input);
+    std::vector<BenchmarkTypes::Monster> deserialize(std::span<const std::byte> input);
 };

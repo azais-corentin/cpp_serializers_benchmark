@@ -20,4 +20,11 @@ target_link_libraries(cpp_serializers_benchmark PRIVATE
     zpp_bits
     zpp_bits_fixed
     bitsery_general
+    bitsery_brief_syntax
+    flatbuffers
+    memcpy
+    alpaca_benchmark
 )
+
+find_package(fmt CONFIG REQUIRED)
+target_link_libraries(cpp_serializers_benchmark PRIVATE fmt::fmt-header-only)

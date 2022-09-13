@@ -1,5 +1,5 @@
 // Example IDL file for our monster's schema.
-namespace MyGame.Sample;
+// namespace Benchmark.Sample;
 
 enum Color:byte { Red = 0, Green, Blue = 2 }
 

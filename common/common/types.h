@@ -27,6 +27,7 @@
 #include <vector>
 
 namespace BenchmarkTypes {
+
 enum Color : uint8_t {
     Red,
     Green,
@@ -37,7 +38,7 @@ struct Vec3 {
     float x;
     float y;
     float z;
-
+    /*
     bool operator==(const BenchmarkTypes::Vec3 &rhs) const {
         //            return x == rhs.x &&
         //                   y == rhs.y &&
@@ -47,13 +48,16 @@ struct Vec3 {
         std::valarray<float> rh({rhs.x, rhs.y, rhs.z});
         return (std::abs(lh - rh) < 0.05f).min();
     };
+    */
 };
 
 struct Weapon {
     std::string name;
     int16_t damage;
 
+    /*
     bool operator==(const Weapon &rhs) const { return name == rhs.name && damage == rhs.damage; };
+    */
 };
 
 struct Monster {
@@ -67,10 +71,12 @@ struct Monster {
     Weapon equipped;
     std::vector<Vec3> path;
 
+    /*
     bool operator==(const BenchmarkTypes::Monster &rhs) const {
         return pos == rhs.pos && mana == rhs.mana && hp == rhs.hp && name == rhs.name && inventory == rhs.inventory &&
                color == rhs.color && weapons == rhs.weapons && equipped == rhs.equipped && path == rhs.path;
     };
+    */
 };
 
 std::vector<Monster> createMonsters(size_t count);

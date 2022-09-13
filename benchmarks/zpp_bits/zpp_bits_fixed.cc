@@ -22,10 +22,24 @@
 
 #include "zpp_bits_fixed.hh"
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4189)
+#endif
 #include "zpp_bits.h"
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 #include <cassert>
-#include <span>
+#include <iostream>
+
+namespace BenchmarkTypes {
+
+constexpr auto serialize(auto &archive, Vec3 &vec) { return archive(zpp::bits::as_bytes(vec)); }
+constexpr auto serialize(auto &archive, Vec3 const &vec) { return archive(zpp::bits::as_bytes(vec)); }
+
+} // namespace BenchmarkTypes
 
 std::span<std::byte> zpp_bits_fixed::serialize(std::span<const BenchmarkTypes::Monster> input) {
     zpp::bits::out out{data_};
@@ -35,12 +49,10 @@ std::span<std::byte> zpp_bits_fixed::serialize(std::span<const BenchmarkTypes::M
     return {};
 }
 
-std::vector<BenchmarkTypes::Monster> zpp_bits_fixed::deserialize(std::span<const std::byte> input) {
+std::span<BenchmarkTypes::Monster> zpp_bits_fixed::deserialize(std::span<const std::byte> input) {
     zpp::bits::in in{input};
 
-    std::vector<BenchmarkTypes::Monster> output;
-
-    if (zpp::bits::success(in(output))) { return output; }
+    if (zpp::bits::success(in(output_))) { return output_; }
 
     return {};
 }

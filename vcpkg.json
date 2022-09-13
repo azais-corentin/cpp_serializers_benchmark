@@ -11,6 +11,7 @@
         "msgpack",
         "protobuf",
         "yas",
-        "zpp-bits"
+        "zpp-bits",
+        "fmt"
     ]
 }
